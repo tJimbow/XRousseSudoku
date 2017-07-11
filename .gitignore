@@ -263,3 +263,4 @@ __pycache__/
 # custom jim / vic
 *.bak
 XRousseSudoku/XRousseSudoku.UWP/*.png
+XRousseSudoku/XRousseSudoku.Android/Resources/Resource.Designer.cs
