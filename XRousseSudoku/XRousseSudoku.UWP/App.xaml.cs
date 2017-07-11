@@ -15,6 +15,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+using Windows.UI.ViewManagement;
+
 namespace XRousseSudoku.UWP
 {
     /// <summary>
@@ -28,7 +30,16 @@ namespace XRousseSudoku.UWP
         /// </summary>
         public App()
         {
+            // set initial app size
+            XRousseSudoku.App.GetUWPAppInitialSize(out int w, out int h);
+            ApplicationView.PreferredLaunchViewSize = new Size(w, h);
+            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+            
+            // FIXME: set min size
+            //ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(64, 64));
+
             this.InitializeComponent();
+
             this.Suspending += OnSuspending;
         }
 
@@ -43,7 +54,7 @@ namespace XRousseSudoku.UWP
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
             {
-                this.DebugSettings.EnableFrameRateCounter = true;
+                //this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
 
