@@ -12,9 +12,8 @@ namespace XRousseSudoku
 		public App ()
 		{
 			InitializeComponent();
-
-			MainPage = new XRousseSudoku.MainPage();
-		}
+            MainPage = new XRousseSudoku.MainPage();
+        }
 
 		protected override void OnStart ()
 		{
