@@ -262,3 +262,4 @@ __pycache__/
 
 # custom jim / vic
 *.bak
+XRousseSudoku/XRousseSudoku.UWP/*.png
