@@ -14,7 +14,6 @@ namespace XRousseSudoku
         public MainPage()
         {
             InitializeComponent();
-            BackgroundColor = Color.FromHex("#e5c15e");
 
             Label header = new Label
             {
@@ -31,7 +30,6 @@ namespace XRousseSudoku
             {
                 Minimum = 0,
                 Maximum = 5,
-                WidthRequest = 5,
                 VerticalOptions = LayoutOptions.CenterAndExpand,
             };
             slider.ValueChanged += OnSliderValueChanged;
@@ -49,6 +47,7 @@ namespace XRousseSudoku
                 Text = "Nouvelle partie",
                 Font = Font.SystemFontOfSize(NamedSize.Large),
                 BorderWidth = 1,
+                BorderRadius = 15,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.CenterAndExpand
             };
