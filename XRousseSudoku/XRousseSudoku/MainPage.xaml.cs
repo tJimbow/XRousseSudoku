@@ -9,7 +9,7 @@ namespace XRousseSudoku
 {
     public partial class MainPage : ContentPage
     {
-        private SliderStep _difficultySlider;
+        private SliderStep _sliderLayout;
 
         public MainPage()
         {
@@ -36,7 +36,7 @@ namespace XRousseSudoku
         protected override void OnAppearing()
         {
             // must set slider value here because of Xamarin bug when slider.Minimum != 0
-            _difficultySlider.SetDefaultValue();
+            _sliderLayout.SetDefaultValue();
         }
 
         public View MainMenu()
@@ -55,20 +55,9 @@ namespace XRousseSudoku
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
             };
 
-            // Create the difficulty message view
-            Label difficultyLabel = new Label
-            {
-                // Add options for the difficulty message
-                Margin = new Thickness(10, 0, 10, 10),
-                Text     = "Niveau de difficulté : Normal",
-                FontSize = 20,
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions   = LayoutOptions.StartAndExpand,
-            };
-
             // Create slider view
-            float minSlider = 1.0f;
-            float maxSlider = 3.0f;
+            int minSlider = 1;
+            int maxSlider = 3;
             List<string> difficultyNames = new List<string>()
             {
                 "Facile",
@@ -76,7 +65,9 @@ namespace XRousseSudoku
                 "Difficile"
             };
             string prefix = "La difficulté est :";
-            _difficultySlider = new SliderStep(minSlider, maxSlider, difficultyLabel, difficultyNames, prefix);
+
+            // Create new Layout for the slider
+            _sliderLayout = new SliderStep(minSlider, maxSlider, difficultyNames, prefix);
             
             // Create new button view to create a new game
             Button newGameBtn = new Button
@@ -90,6 +81,7 @@ namespace XRousseSudoku
                 VerticalOptions   = LayoutOptions.CenterAndExpand
             };
 
+
             // Create new Layout with all the Views
             StackLayout contentMenu = new StackLayout
             {
@@ -101,9 +93,7 @@ namespace XRousseSudoku
                         // Add title
                         mainTitleView,
                         // Add slider
-                        _difficultySlider,
-                        // Add message for the slider
-                        _difficultySlider.Label,
+                        _sliderLayout,
                         // Add button to create new game
                         newGameBtn
                     }
