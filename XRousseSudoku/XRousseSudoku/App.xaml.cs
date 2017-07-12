@@ -29,5 +29,13 @@ namespace XRousseSudoku
 		{
 			// Handle when your app resumes
 		}
-	}
+
+        public static void GetUWPAppInitialSize(out int w, out int h)
+        {
+            // galaxy S7 ratio
+            float aspect = 16.0f / 9.0f;
+            h = 800;
+            w = (int)(h / aspect);
+        }
+    }
 }
