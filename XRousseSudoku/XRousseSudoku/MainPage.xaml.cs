@@ -58,7 +58,7 @@ namespace XRousseSudoku
             Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 5);
 
             // Build the page.
-            bool testGrid = true;
+            bool testGrid = false;
             if (testGrid)
                 Content = Grid4x4_Test();
             else
