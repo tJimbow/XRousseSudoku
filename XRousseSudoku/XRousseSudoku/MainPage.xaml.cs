@@ -19,7 +19,7 @@ namespace XRousseSudoku
             // set background image
             BackgroundImage = "retina_wood_1024.png";
         
-            // Build the page.
+            // Build the page
             Content = MainMenu();
         }        
 
@@ -71,7 +71,8 @@ namespace XRousseSudoku
                 VerticalOptions   = LayoutOptions.CenterAndExpand
             };
 
-            newGameBtn.Clicked += OnNewGame;
+            // call OnNewGameButton() when button clicked
+            newGameBtn.Clicked += OnNewGameButton;
 
             // Create new Layout with all the Views
             StackLayout contentMenu = new StackLayout
@@ -94,22 +95,10 @@ namespace XRousseSudoku
             return contentMenu;
         }
 
-        async void OnNewGame(object sender, EventArgs ea)
+        async void OnNewGameButton(object sender, EventArgs ea)
         {
-            var modalPage = new Page1();
-            
+            var modalPage = new GamePage();            
             await Navigation.PushModalAsync(modalPage);
-            System.Diagnostics.Debug.WriteLine("The modal page is now on screen");
-            
-            //var poppedPage = await Navigation.PopModalAsync();
-
-            //Debug.WriteLine("The modal page is dismissed");
-            //Debug.WriteLine(Object.ReferenceEquals (modalPage, poppedPage)); //prints "true"
-        }        
-
-        //static void myPage_SizeChanged(object sender, EventArgs e)
-        //{
-        //    Debug.WriteLine(myPage.Width + " " + myPage.Height);
-        //}
+        }
     }
 }
