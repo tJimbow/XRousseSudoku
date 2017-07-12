@@ -7,28 +7,35 @@ using Xamarin.Forms;
 
 namespace XRousseSudoku
 {
+    // Add class slider with Label Update Method with difficulty list
     public class SliderStep : Slider
     {
         Label label;
         private int StepValue;
         private Label sliderMessage;
 
+        // Construct Slider
         public SliderStep(float inMin, float inMax, Label inMessage, int step=1)
         {
+            // Margin for the slider thickness(left,top,right,bottom)
+            Margin = new Thickness(100, 0, 100, 0);
+            // Int : step value for the slide
             StepValue = step;
+            // Label : message label object from constructor
             sliderMessage = inMessage;
+            // Calculating the average between min and max slider value
             float moyenne = (inMin + inMax) / 2;
             // Add options for the slider
-            // Max value for the slider
+            // float Min, Max and default value for the slider
             Maximum = inMax;
-            // Min value for the slider
             Minimum = inMin;
-            Value = moyenne;
+            Value   = moyenne;
             // Slider is Center and Expand with parent
             VerticalOptions = LayoutOptions.CenterAndExpand;
             UpdateText((int)Value);
         }
 
+        // Creating List for the difficulties
         List<string> difficultyList = new List<string>()
         {
             "Facile",
@@ -36,16 +43,21 @@ namespace XRousseSudoku
             "Difficile"
         };
 
+
+        // Method to change the value of message slider with the difficulty list
         public void UpdateText(int value)
         {
             sliderMessage.Text = String.Format("Niveau de difficulté : {0:F1}", difficultyList[value - 1]);
         }
 
-        // REVIEW (7): need to show difficulty level message instead of "Slider value is 0"
+       // Method to change value from slide only to int value
         public void OnSliderValueChanged(object sender, ValueChangedEventArgs e)
         {
+            // Round value between the new value on Step Value
             var newStep = Math.Round(e.NewValue / StepValue);
+            // Affect it to the slide value
             this.Value = newStep * StepValue;
+            // Call method to display the new difficulty level
             UpdateText((int)Value);
         }
 
@@ -66,21 +78,16 @@ namespace XRousseSudoku
             // REVIEW (3): Comic Sans MS is the worst font of all
             // REVIEW (4): header is not a good name for the title element ...
             // REVIEW (6): slider is not a good variable name
-
-
-
-
-            // REVIEW (8): do we need this thing, what is the purpose ? 
-            // Accomodate iPhone status bar.
-            Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 5);
+            // REVIEW (7): need to show difficulty level message instead of "Slider value is 0"
             
             // Build the page.
             bool testGrid = false;
             if (testGrid)
+                // Display Grid
                 Content = Grid4x4_Test();
             else
             {
-                // REVIEW (1): all code to create main menu should go into a method (like Grid4x4_Test)
+                // Or display Menu
                 Content = mainMenu();
             }
         }
@@ -88,31 +95,32 @@ namespace XRousseSudoku
 
         public View mainMenu()
         {
+            // Value min and max to initiate Slider
             float minSlider = 1.0f;
             float maxSlider = 3.0f;
             // Create title view
             Label mainTitleView = new Label
             {
                 // Add options for the title view
-                Text = "XRousse Sudoku",
-                FontSize = 40,
-                FontFamily = "Verdana",
+                Margin = new Thickness(0, 40, 10, 0),
+                Text           = "XRousse Sudoku",
+                FontSize       = 40,
+                FontFamily     = "Verdana",
                 FontAttributes = FontAttributes.Bold,
-                TextColor = Color.FromHex("#FFF"),
-                VerticalOptions = LayoutOptions.StartAndExpand,
+                TextColor      = Color.FromHex("#000"),
+                VerticalOptions   = LayoutOptions.StartAndExpand,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
             };
-
-            // REVIEW (7): need to show difficulty level message instead of "Slider value is 0"
 
             // Create the difficulty message view
             Label difficultyMessage = new Label
             {
                 // Add options for the difficulty message
-                Text = "Niveau de difficulté : 0",
+                Margin = new Thickness(10, 0, 10, 10),
+                Text     = "Niveau de difficulté : Normal",
                 FontSize = 20,
                 HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.CenterAndExpand
+                VerticalOptions   = LayoutOptions.StartAndExpand,
             };
 
             // Create slider view
@@ -120,28 +128,38 @@ namespace XRousseSudoku
             // Change value from the difficultySlider method OnSliderValueChanged when slider is moved
             difficultySlider.ValueChanged += difficultySlider.OnSliderValueChanged;
 
-
+            // Create new button view to create a new game
             Button newGameBtn = new Button
             {
+                Margin = new Thickness(10, 0, 10, 0),
                 Text = "Nouvelle partie",
                 Font = Font.SystemFontOfSize(NamedSize.Large),
-                BorderWidth = 1,
+                BorderWidth  = 1,
                 BorderRadius = 15,
                 HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.CenterAndExpand
+                VerticalOptions   = LayoutOptions.CenterAndExpand
             };
 
+            // Create new Layout with all the Views
             StackLayout contentMenu = new StackLayout
             {
+                // Add padding to the Menu Content
+                Padding = new Thickness(0, 20, 0, 20),
+                // Contenu of the main menu
                 Children =
                     {
+                        // Add title
                         mainTitleView,
+                        // Add slider
                         difficultySlider,
+                        // Add message for the slider
                         difficultyMessage,
+                        // Add button to create new game
                         newGameBtn
                     }
             };
 
+            // Return a View of the content menu
             return contentMenu;
         }
 
