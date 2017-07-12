@@ -7,9 +7,52 @@ using Xamarin.Forms;
 
 namespace XRousseSudoku
 {
-    public partial class MainPage : ContentPage
+    public class SliderStep : Slider
     {
         Label label;
+        private int StepValue;
+        private Label sliderMessage;
+
+        public SliderStep(float inMin, float inMax, Label inMessage, int step=1)
+        {
+            StepValue = step;
+            sliderMessage = inMessage;
+            float moyenne = (inMin + inMax) / 2;
+            // Add options for the slider
+            // Max value for the slider
+            Maximum = inMax;
+            // Min value for the slider
+            Minimum = inMin;
+            Value = moyenne;
+            // Slider is Center and Expand with parent
+            VerticalOptions = LayoutOptions.CenterAndExpand;
+            UpdateText((int)Value);
+        }
+
+        List<string> difficultyList = new List<string>()
+        {
+            "Facile",
+            "Normal",
+            "Difficile"
+        };
+
+        public void UpdateText(int value)
+        {
+            sliderMessage.Text = String.Format("Niveau de difficulté : {0:F1}", difficultyList[value - 1]);
+        }
+
+        // REVIEW (7): need to show difficulty level message instead of "Slider value is 0"
+        public void OnSliderValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            var newStep = Math.Round(e.NewValue / StepValue);
+            this.Value = newStep * StepValue;
+            UpdateText((int)Value);
+        }
+
+    }
+
+    public partial class MainPage : ContentPage
+    {
 
         public MainPage()
         {
@@ -22,36 +65,62 @@ namespace XRousseSudoku
             // REVIEW (2): there should be some padding above the app title
             // REVIEW (3): Comic Sans MS is the worst font of all
             // REVIEW (4): header is not a good name for the title element ...
-            Label header = new Label
+            // REVIEW (6): slider is not a good variable name
+
+
+
+
+            // REVIEW (8): do we need this thing, what is the purpose ? 
+            // Accomodate iPhone status bar.
+            Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 5);
+            
+            // Build the page.
+            bool testGrid = false;
+            if (testGrid)
+                Content = Grid4x4_Test();
+            else
             {
+                // REVIEW (1): all code to create main menu should go into a method (like Grid4x4_Test)
+                Content = mainMenu();
+            }
+        }
+
+
+        public View mainMenu()
+        {
+            float minSlider = 1.0f;
+            float maxSlider = 3.0f;
+            // Create title view
+            Label mainTitleView = new Label
+            {
+                // Add options for the title view
                 Text = "XRousse Sudoku",
                 FontSize = 40,
-                FontFamily = "Comic Sans MS",
+                FontFamily = "Verdana",
                 FontAttributes = FontAttributes.Bold,
                 TextColor = Color.FromHex("#FFF"),
                 VerticalOptions = LayoutOptions.StartAndExpand,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
             };
 
-            // REVIEW (5): slider is not a good variable name
-            Slider slider = new Slider
-            {
-                Minimum = 0,
-                Maximum = 5,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-            };
-            slider.ValueChanged += OnSliderValueChanged;
-
-            // REVIEW (6): slider is not a good variable name
             // REVIEW (7): need to show difficulty level message instead of "Slider value is 0"
-            label = new Label
+
+            // Create the difficulty message view
+            Label difficultyMessage = new Label
             {
-                Text = "Slider value is 0",
+                // Add options for the difficulty message
+                Text = "Niveau de difficulté : 0",
                 FontSize = 20,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.CenterAndExpand
             };
-            
+
+            // Create slider view
+            SliderStep difficultySlider = new SliderStep(minSlider, maxSlider, difficultyMessage);
+            // Change value from the difficultySlider method OnSliderValueChanged when slider is moved
+            difficultySlider.ValueChanged += difficultySlider.OnSliderValueChanged;
+
+
             Button newGameBtn = new Button
             {
                 Text = "Nouvelle partie",
@@ -62,40 +131,18 @@ namespace XRousseSudoku
                 VerticalOptions = LayoutOptions.CenterAndExpand
             };
 
-            // REVIEW (8): do we need this thing, what is the purpose ? 
-            // Accomodate iPhone status bar.
-            Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 5);
-            
-            // Build the page.
-            bool testGrid = true;
-            if (testGrid)
-                Content = Grid4x4_Test();
-            else
+            StackLayout contentMenu = new StackLayout
             {
-                // REVIEW (1): all code to create main menu should go into a method (like Grid4x4_Test)
-                Content = new StackLayout
-                {
-                    Children =
+                Children =
                     {
-                        header,
-                        slider,
-                        label,
+                        mainTitleView,
+                        difficultySlider,
+                        difficultyMessage,
                         newGameBtn
                     }
-                };
+            };
 
-                // REVIEW (9): useless code, needs to be removed
-                RelativeLayout relative = new RelativeLayout();
-                ScrollView scroll = new ScrollView {
-                    Content = {}
-                };
-            }
-        }
-
-        // REVIEW (7): need to show difficulty level message instead of "Slider value is 0"
-        void OnSliderValueChanged(object sender, ValueChangedEventArgs e)
-        {
-            label.Text = String.Format("Slider value is {0:F1}", e.NewValue);
+            return contentMenu;
         }
 
         public View Grid4x4_Test()
@@ -115,20 +162,19 @@ namespace XRousseSudoku
             {
                 for (int j = 0; j < 2; j++)
                 {
-
                     // each cell contains a layout frame (in expand all mode)
                     Frame frame = new Frame();
-                    frame.VerticalOptions = LayoutOptions.FillAndExpand;
+                    frame.VerticalOptions   = LayoutOptions.FillAndExpand;
                     frame.HorizontalOptions = LayoutOptions.FillAndExpand;
-                    frame.OutlineColor = Color.Red; // only has effect on uwp
-                    //frame.BackgroundColor = (((i + j)% 2) == 0) ? Color.White : Color.Red;
+                    //frame.OutlineColor = Color.Red; // only has effect on uwp
+                    frame.BackgroundColor = (((i + j)% 2) == 0) ? Color.White : Color.Red;
 
                     // the frame contains a centered label
                     string label_text = Char.ConvertFromUtf32(65 + i + j * 2);
                     frame.Content = new Label
                     {
                         Text = label_text,
-                        VerticalOptions = LayoutOptions.Center,
+                        VerticalOptions   = LayoutOptions.Center,
                         HorizontalOptions = LayoutOptions.Center,
                         FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
                     };
