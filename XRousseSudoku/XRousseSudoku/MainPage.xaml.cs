@@ -23,16 +23,21 @@ namespace XRousseSudoku
             StepValue = step;
             // Label : message label object from constructor
             sliderMessage = inMessage;
-            // Calculating the average between min and max slider value
-            float moyenne = (inMin + inMax) / 2;
             // Add options for the slider
             // float Min, Max and default value for the slider
             Maximum = inMax;
             Minimum = inMin;
-            Value   = moyenne;
+            setDefaultValue();
             // Slider is Center and Expand with parent
             VerticalOptions = LayoutOptions.CenterAndExpand;
             UpdateText((int)Value);
+        }
+
+        public void setDefaultValue()
+        {
+            // Calculating the average between min and max slider value
+            double moyenne = (Minimum + Maximum) / 2;
+            Value = (int) moyenne;
         }
 
         // Creating List for the difficulties
@@ -71,15 +76,7 @@ namespace XRousseSudoku
             InitializeComponent();
 
             BackgroundImage = "retina_wood_1024.png";
-
-            // REVIEW (0): add more comments explaining the code
-            // REVIEW (1): all code to create main menu should go into a method (like Grid4x4_Test)
-            // REVIEW (2): there should be some padding above the app title
-            // REVIEW (3): Comic Sans MS is the worst font of all
-            // REVIEW (4): header is not a good name for the title element ...
-            // REVIEW (6): slider is not a good variable name
-            // REVIEW (7): need to show difficulty level message instead of "Slider value is 0"
-            
+        
             // Build the page.
             bool testGrid = false;
             if (testGrid)
@@ -92,6 +89,12 @@ namespace XRousseSudoku
             }
         }
 
+        SliderStep difficultySlider;
+
+        protected override void OnAppearing()
+        {
+            difficultySlider.setDefaultValue();
+        }
 
         public View mainMenu()
         {
@@ -124,7 +127,7 @@ namespace XRousseSudoku
             };
 
             // Create slider view
-            SliderStep difficultySlider = new SliderStep(minSlider, maxSlider, difficultyMessage);
+            difficultySlider = new SliderStep(minSlider, maxSlider, difficultyMessage);
             // Change value from the difficultySlider method OnSliderValueChanged when slider is moved
             difficultySlider.ValueChanged += difficultySlider.OnSliderValueChanged;
 
