@@ -17,6 +17,11 @@ namespace XRousseSudoku
 
             BackgroundImage = "retina_wood_1024.png";
 
+            // REVIEW (0): add more comments explaining the code
+            // REVIEW (1): all code to create main menu should go into a method (like Grid4x4_Test)
+            // REVIEW (2): there should be some padding above the app title
+            // REVIEW (3): Comic Sans MS is the worst font of all
+            // REVIEW (4): header is not a good name for the title element ...
             Label header = new Label
             {
                 Text = "XRousse Sudoku",
@@ -28,6 +33,7 @@ namespace XRousseSudoku
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
             };
 
+            // REVIEW (5): slider is not a good variable name
             Slider slider = new Slider
             {
                 Minimum = 0,
@@ -36,6 +42,8 @@ namespace XRousseSudoku
             };
             slider.ValueChanged += OnSliderValueChanged;
 
+            // REVIEW (6): slider is not a good variable name
+            // REVIEW (7): need to show difficulty level message instead of "Slider value is 0"
             label = new Label
             {
                 Text = "Slider value is 0",
@@ -43,7 +51,7 @@ namespace XRousseSudoku
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.CenterAndExpand
             };
-
+            
             Button newGameBtn = new Button
             {
                 Text = "Nouvelle partie",
@@ -54,15 +62,17 @@ namespace XRousseSudoku
                 VerticalOptions = LayoutOptions.CenterAndExpand
             };
 
+            // REVIEW (8): do we need this thing, what is the purpose ? 
             // Accomodate iPhone status bar.
             Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 5);
-
+            
             // Build the page.
             bool testGrid = true;
             if (testGrid)
                 Content = Grid4x4_Test();
             else
             {
+                // REVIEW (1): all code to create main menu should go into a method (like Grid4x4_Test)
                 Content = new StackLayout
                 {
                     Children =
@@ -73,6 +83,8 @@ namespace XRousseSudoku
                         newGameBtn
                     }
                 };
+
+                // REVIEW (9): useless code, needs to be removed
                 RelativeLayout relative = new RelativeLayout();
                 ScrollView scroll = new ScrollView {
                     Content = {}
@@ -80,6 +92,7 @@ namespace XRousseSudoku
             }
         }
 
+        // REVIEW (7): need to show difficulty level message instead of "Slider value is 0"
         void OnSliderValueChanged(object sender, ValueChangedEventArgs e)
         {
             label.Text = String.Format("Slider value is {0:F1}", e.NewValue);
