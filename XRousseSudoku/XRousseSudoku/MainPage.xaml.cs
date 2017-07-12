@@ -32,7 +32,6 @@ namespace XRousseSudoku
             {
                 Minimum = 0,
                 Maximum = 5,
-                WidthRequest = 5,
                 VerticalOptions = LayoutOptions.CenterAndExpand,
             };
             slider.ValueChanged += OnSliderValueChanged;
@@ -50,6 +49,7 @@ namespace XRousseSudoku
                 Text = "Nouvelle partie",
                 Font = Font.SystemFontOfSize(NamedSize.Large),
                 BorderWidth = 1,
+                BorderRadius = 15,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.CenterAndExpand
             };
@@ -58,7 +58,7 @@ namespace XRousseSudoku
             Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 5);
 
             // Build the page.
-            bool testGrid = false;
+            bool testGrid = true;
             if (testGrid)
                 Content = Grid4x4_Test();
             else
