@@ -24,6 +24,8 @@ namespace XRousseSudoku.UWP
     /// </summary>
     sealed partial class App : Application
     {
+        Size _initialSize;
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -31,15 +33,15 @@ namespace XRousseSudoku.UWP
         public App()
         {
             // set initial app size
-            XRousseSudoku.App.GetUWPAppInitialSize(out int w, out int h);
-            ApplicationView.PreferredLaunchViewSize = new Size(w, h);
+            XRousseSudoku.App.ComputeUWCWindowSize(800, out int w, out int h);
+            _initialSize = new Size(w, h);
+            ApplicationView.PreferredLaunchViewSize = _initialSize;
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
             
-            // FIXME: set min size
-            //ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(64, 64));
-
+            //
             this.InitializeComponent();
 
+            //
             this.Suspending += OnSuspending;
         }
 
@@ -52,10 +54,10 @@ namespace XRousseSudoku.UWP
         {
 
 #if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-                //this.DebugSettings.EnableFrameRateCounter = true;
-            }
+            //if (System.Diagnostics.Debugger.IsAttached)
+            //{
+            //    this.DebugSettings.EnableFrameRateCounter = true;
+            //}
 #endif
 
             Frame rootFrame = Window.Current.Content as Frame;
@@ -89,6 +91,12 @@ namespace XRousseSudoku.UWP
             }
             // Ensure the current window is active
             Window.Current.Activate();
+
+            // set minimum window size => % of initial size (does not seem to work very well ...)
+            double coef = 0.9;
+            ApplicationView.GetForCurrentView().SetPreferredMinSize(
+                new Size(_initialSize.Width * coef, _initialSize.Height * coef)
+            );
         }
 
         /// <summary>

@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
+using System.Diagnostics;
+
 namespace XRousseSudoku
 {
-	public partial class GamePage : ContentPage
-	{
-		public GamePage ()
+    public partial class GamePage : ContentPage
+    {
+        public GamePage()
         {
             InitializeComponent();
 
@@ -71,77 +73,93 @@ namespace XRousseSudoku
                 Orientation = StackOrientation.Horizontal,
             };
 
-            for(int i = 1; i<10; i++)
+            for (int i = 1; i < 10; i++)
             {
                 Button btn = new Button();
                 btn.Text = i.ToString();
                 numbersLayout.Children.Add(btn);
-            }          
+            }
 
             return numbersLayout;
         }
 
+        // structure of the sudoku grid:
+        // Frame (centered, padding 0)
+        //  -> Grid (fillExpand)
+        //      -> ContentView (fillExpand, padding 0)
+        //          -> Label (center & expand)
         public View GridTest()
         {
+            // width / height of the grid
             int N = 9;
 
-            // create a grid
-            Grid grid = new Grid();
+            // create the container frame
+            Frame container = new Frame
+            {
+                Padding = new Thickness(0),
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Center,
+                BackgroundColor = Color.Blue,
+                HasShadow = false
+            };
 
-            // add N lines and N columns 
+            // force container to be proportional to window size and square
+            this.SizeChanged += (object sender, EventArgs e) =>
+            {
+                double iSize = this.Height * 0.75;
+                if (iSize >= this.Width)
+                    iSize = this.Width - 32;
+                container.WidthRequest = iSize;
+                container.HeightRequest = iSize;
+            };
+
+            // create a grid
+            Grid grid = new Grid
+            {
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                RowSpacing = 0,
+                ColumnSpacing = 0
+            };
+
+            // add N lines and N columns to the grid
             // (do not interleave RowDefinitions.Add & ColumnDefinitions.Add calls, this fails !)
             for (int i = 0; i < N; i++)
                 grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             for (int j = 0; j < N; j++)
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-            // set content of each cell
+            // grid cells
             for (int i = 0; i < N; i++)
             {
                 for (int j = 0; j < N; j++)
                 {
-                    string text = "99"; // (i + j * N).ToString();
-
-                    bool useButton = false;
-                    if (useButton)
+                    var contentViewCell = new ContentView
                     {
-                        Button button = new Button
-                        {
-                            Text = text,
-                            Font = Font.SystemFontOfSize(NamedSize.Micro),
-                            BorderWidth = 1,
-                            VerticalOptions = LayoutOptions.FillAndExpand,
-                            HorizontalOptions = LayoutOptions.FillAndExpand,
-                        };
-                        grid.Children.Add(button, i, j);
-                    }
-                    else
+                        BackgroundColor = (((i + j) % 2) == 0) ? Color.White : Color.LightGray,
+                        Padding = new Thickness(0),
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        VerticalOptions = LayoutOptions.FillAndExpand,
+                    };
+
+                    contentViewCell.Content = new Label
                     {
-                        // each cell contains a layout frame(in expand all mode)
-                        Frame frame = new Frame
-                        {
-                            VerticalOptions = LayoutOptions.FillAndExpand,
-                            HorizontalOptions = LayoutOptions.FillAndExpand,
-                            BackgroundColor = (((i + j) % 2) == 0) ? Color.White : Color.LightGray
-                        };
+                        Text = "99",
+                        FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
+                        HorizontalOptions = LayoutOptions.CenterAndExpand,
+                        VerticalOptions = LayoutOptions.CenterAndExpand,
+                    };
 
-                        // the frame contains a centered label
-                        frame.Content = new Label
-                        {
-                            Text = text,
-                            VerticalOptions = LayoutOptions.Center,
-                            HorizontalOptions = LayoutOptions.Center,
-                            FontSize = Device.GetNamedSize(NamedSize.Micro, typeof(Label))
-                        };
-
-                        // add frame to the grid
-                        grid.Children.Add(frame, i, j);
-                    }
+                    grid.Children.Add(contentViewCell, i, j);
                 }
             }
-            return grid;
+
+            // add grid to the frame
+            container.Content = grid;
+
+            return container;
         }
-    
+
         async void GoBackToMainMenuPage(object sender, EventArgs ea)
         {
             await Navigation.PopModalAsync();
