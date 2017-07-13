@@ -30,12 +30,11 @@ namespace XRousseSudoku
 			// Handle when your app resumes
 		}
 
-        public static void GetUWPAppInitialSize(out int w, out int h)
+        public static void ComputeUWCWindowSize(int initialH, out int w, out int h)
         {
-            // galaxy S7 ratio
-            float aspect = 16.0f / 9.0f;
-            h = 800;
-            w = (int)(h / aspect);
+            double ratio = 768.0 / 1280.0;
+            h = initialH;
+            w = (int)(initialH * ratio);
         }
     }
 }
