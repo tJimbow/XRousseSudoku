@@ -16,10 +16,6 @@ namespace XRousseSudoku
             // must stay first
             InitializeComponent();
 
-            // Tests
-            SudokuGridData g = new SudokuGridData(1);
-            g.Log();
-
             // set background image
             BackgroundImage = "retina_wood_1024.png";
         

@@ -5,16 +5,35 @@ using System.Diagnostics;
 
 namespace XRousseSudoku
 {
-    class SudokuGridData
+    public class SudokuGridData
     {
-
         protected int _blockW;
         protected int _blockH;
         protected int _width;
         protected int _height;
+
         protected int _nSymbols;
         protected int[][] _cells;
 
+        // getters
+        public int BlocW { get => _blockW; }
+        public int BlocH { get => _blockH; }
+        public int W { get => _width; }
+        public int H { get => _height; }
+
+        public bool IsSquare()
+        {
+            return W == H;
+        }
+
+        public int getCell(int line, int column)
+        {
+            Debug.Assert((line >= 0) && (line < H), "SudokuGridData, getCell, invalid line: " + line);
+            Debug.Assert((column >= 0) && (column < W), "SudokuGridData, getCell, invalid column: " + column);
+            return _cells[line][column];
+        }
+
+        // constructor
         public SudokuGridData(int difficulty, int blockW = 3, int blockH  = 3)
         {
             _blockW = blockW;

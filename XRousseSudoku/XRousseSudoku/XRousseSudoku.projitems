@@ -21,6 +21,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)SliderStep.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SudokuGridData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SudokuGridView.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)MainPage.xaml">
