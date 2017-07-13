@@ -7,6 +7,8 @@ namespace XRousseSudoku
 {
     class SudokuGridData
     {
+        //Randomize need to be initilized once
+        protected Random rdm = new Random();
 
         protected int _blockW;
         protected int _blockH;
@@ -30,6 +32,12 @@ namespace XRousseSudoku
             }
 
             GenerateRandomGrid(difficulty);
+            for(int i = 0; i <= 20; i++)
+            {
+                RandomizeRows(10);
+                RandomizeColumns(10);
+            }
+            
         }
 
         public void GenerateRandomGrid(int difficulty)
@@ -61,6 +69,7 @@ namespace XRousseSudoku
                     }
                 }
             }
+            Log();
         }
 
         public bool checkSymbols(int[] sequence)
@@ -129,11 +138,67 @@ namespace XRousseSudoku
             return true;
         }
 
+        // Randomize helper
+        public void RandomizeHelper(int blockNb, out int rBlock, out int offsetA, out int offsetB)
+        {
+            rBlock = rdm.Next(0, blockNb);
+
+            int rA, rB;
+
+            // Do Randomize While Column A is not like Column B 
+            rA = rdm.Next(1, (blockNb + 1));
+            do
+            {
+                rB = rdm.Next(1, (blockNb + 1));
+            } while (rA == rB);
+            offsetA = ((rBlock * _blockW) + rA) - 1;
+            offsetB = ((rBlock * _blockW) + rB) - 1;
+            //Debug.WriteLine(" Modification dans block : "+rBlock+" - rA : "+rA+" - rB : "+rB+ " - OffsetA  : "+offsetA+" - OffsetB : "+offsetB);
+        }
+
+        // Randomize columns
+        public void RandomizeColumns(int nbTimes)
+        {
+            for( int nb = 0; nb <= nbTimes; nb++)
+            {
+                // Get offset to be modified via RandomizeHelper method
+                RandomizeHelper(_blockW, out int rBlock, out int offsetA, out int offsetB);
+
+                // Do permutation
+                int[] tempTab = _cells[offsetB];
+                _cells[offsetB] = _cells[offsetA];
+                _cells[offsetA] = tempTab;
+            }
+        }
+
+        //Randomize rows
+        public void RandomizeRows(int nbTimes)
+        {
+            for (int nb = 0; nb <= nbTimes; nb++)
+            {
+                // Get offset to be modified via RandomizeHelper method
+                RandomizeHelper(_blockH, out int rBlock, out int offsetA, out int offsetB);
+
+                // Do Permutation
+                for (int i = 0; i < _width; i++)
+                {
+                    int tempValue = 0;
+                    tempValue = _cells[i][offsetB];
+                    _cells[i][offsetB] = _cells[i][offsetA];
+                    _cells[i][offsetA] = tempValue;
+                }
+            }
+        }
+
         public void Log()
         {
             if (!isValid())
             {
-                Debug.WriteLine("Invali Sudoku Grid : ");
+                Debug.WriteLine("Invalid Sudoku Grid : ");
+            }
+            else
+            {
+                Debug.WriteLine("Valid Sudoku Grid : ");
             }
             for (int j = 0; j < _height; j++)
             {
