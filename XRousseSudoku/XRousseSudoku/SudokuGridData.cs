@@ -92,10 +92,23 @@ namespace XRousseSudoku
             }
             Log();
         }
-
+        // Is Each symbols unique per line, column and block
         public bool CheckSymbols(int[] sequence)
         {
+
+            // REVIEW : Modification du check si des cases sont vide ne renvoie pas d'erreur et va donc
+            // Compter les cases vides et les soustraits du total
             int nFound = 0;
+            int nbNull = 0;
+            // Count of null value in tab
+            for(int i = 0; i < sequence.Length; i++)
+            {
+                if(sequence[i] == 0)
+                {
+                    nbNull++;
+                }
+            }
+            // Check foreach Symbols is unique
             for (int k = 1; k <= _nSymbols; k++)
             {
                 int pos = Array.IndexOf(sequence, k);
@@ -103,7 +116,7 @@ namespace XRousseSudoku
                     nFound++;
 
             }
-            return (nFound != _nSymbols) ? false : true;
+            return (nFound != (_nSymbols - nbNull)) ? false : true;
         }
 
         public bool IsValid()
@@ -117,7 +130,6 @@ namespace XRousseSudoku
                     return false;
                 }
             }
-
             // Test Columns
             int[] tabColToTest = new int[_height];
             for(int i = 0; i < _width; i++)
