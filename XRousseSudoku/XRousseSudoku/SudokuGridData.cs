@@ -108,10 +108,6 @@ namespace XRousseSudoku
 
         public bool IsValid()
         {
-            // REVIEW: celle ligne doit etre plus bas -> // Test Columns
-            int[] tabColToTest = new int[_nSymbols];
-            // REVIEW: celle ligne doit etre plus bas -> // Test Blocks
-            int[] tabBlockToTest = new int[_nSymbols];
 
             // Test lines
             for (int j = 0; j < _height; j++)
@@ -123,14 +119,11 @@ namespace XRousseSudoku
             }
 
             // Test Columns
+            int[] tabColToTest = new int[_height];
             for(int i = 0; i < _width; i++)
             {
                 for (int j = 0; j < _height; j++)
                 {
-                    // REVIEW: 
-                    // taille de tabColToTest est actuellement [_nSymbols]
-                    // mais j est dans [0, _height-1]
-                    // donc tabColToTest devrait avoir une taille [height]
                     tabColToTest[j] = _cells[i][j];
                 }
                 if (!CheckSymbols(tabColToTest))
@@ -140,6 +133,7 @@ namespace XRousseSudoku
             }
 
             // Test blocks
+            int[] tabBlockToTest = new int[_blockW * _blockH];
             for(int i = 0; i < _width; i += _blockW)
             {
                 for( int j = 0; j < _height; j+= _blockH)
@@ -150,10 +144,6 @@ namespace XRousseSudoku
                         for (int l = j; l < (j + _blockH); l++)
                         {
                             int val = _cells[k][l];
-                            // REVIEW: 
-                            // taille de tabBlockToTest est actuellement [_nSymbols]
-                            // mais indexTab est dans [0, _blockW*_blockH-1]
-                            // donc tabColToTest devrait avoir une taille [_blockW*_blockH]
                             tabBlockToTest[indexTab] = val;
                             indexTab++;
                         }
@@ -169,10 +159,9 @@ namespace XRousseSudoku
         }
 
         // Randomize helper
-        // REVIEW: le parametre rBlock est inutile, a enlever
-        public void RandomizeHelper(int blockNb, out int rBlock, out int offsetA, out int offsetB)
+        public void RandomizeHelper(int blockNb, out int offsetA, out int offsetB)
         {
-            rBlock = rdm.Next(0, blockNb);
+            int rBlock = rdm.Next(0, blockNb);
 
             // Do Randomize While Column A is not like Column B 
             int rA, rB;
@@ -183,9 +172,6 @@ namespace XRousseSudoku
             } while (rA == rB);
             offsetA = ((rBlock * _blockW) + rA) - 1;
             offsetB = ((rBlock * _blockW) + rB) - 1;
-
-            // REVIEW: ne pas commit du code de debug qui ne sert plus
-            //Debug.WriteLine(" Modification dans block : "+rBlock+" - rA : "+rA+" - rB : "+rB+ " - OffsetA  : "+offsetA+" - OffsetB : "+offsetB);
         }
 
         // Randomize columns
@@ -194,7 +180,7 @@ namespace XRousseSudoku
             for( int nb = 0; nb <= nbTimes; nb++)
             {
                 // Get offset to be modified via RandomizeHelper method
-                RandomizeHelper(_blockW, out int rBlock, out int offsetA, out int offsetB);
+                RandomizeHelper(_blockW, out int offsetA, out int offsetB);
 
                 // Do permutation
                 int[] tempTab = _cells[offsetB];
@@ -209,7 +195,7 @@ namespace XRousseSudoku
             for (int nb = 0; nb <= nbTimes; nb++)
             {
                 // Get offset to be modified via RandomizeHelper method
-                RandomizeHelper(_blockH, out int rBlock, out int offsetA, out int offsetB);
+                RandomizeHelper(_blockH, out int offsetA, out int offsetB);
 
                 // Do Permutation
                 for (int i = 0; i < _width; i++)

@@ -264,3 +264,4 @@ __pycache__/
 *.bak
 XRousseSudoku/XRousseSudoku.Android/Resources/Resource.Designer.cs
 *.orig
+XRousseSudoku/XRousseSudoku.Android/XRousseSudoku.Android.csproj
