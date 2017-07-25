@@ -220,6 +220,31 @@ namespace XRousseSudoku
             }
         }
 
+        // Hide one value from grid
+        public void RemoveGridValue(int[][] cells)
+        {
+            bool isValueInGrid = false;
+            int numLine = 0;
+            int numCol = 0;
+            // While there is no value in cell
+            while( !isValueInGrid )
+            {
+                // We generate two numbers beetween 1 and the numbre of Symbols
+                numLine = rdm.Next(1, _nSymbols+1);
+                numCol = rdm.Next(1, _nSymbols + 1);
+                // If cell is null we loop else we put the new value 0 in cell
+                if(cells[numLine][numCol] != 0)
+                {
+                    cells[numLine][numCol] = 0;
+                    isValueInGrid = true;
+                }
+            }
+        }
+
+        // Verifiy Grid is solvable
+
+        // While the grid is solvable we remove one cell
+
         public void Log()
         {
             if (!IsValid())
