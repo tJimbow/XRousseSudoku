@@ -221,7 +221,7 @@ namespace XRousseSudoku
         }
 
         // Hide one value from grid
-        public void RemoveGridValue(int[][] cells)
+        public void RemoveGridValue()
         {
             bool isValueInGrid = false;
             int numLine = 0;
@@ -233,15 +233,16 @@ namespace XRousseSudoku
                 numLine = rdm.Next(1, _nSymbols+1);
                 numCol = rdm.Next(1, _nSymbols + 1);
                 // If cell is null we loop else we put the new value 0 in cell
-                if(cells[numLine][numCol] != 0)
+                if(_cells[numLine][numCol] != 0)
                 {
-                    cells[numLine][numCol] = 0;
+                    _cells[numLine][numCol] = 0;
                     isValueInGrid = true;
                 }
             }
         }
 
         // Verifiy Grid is solvable
+
 
         // While the grid is solvable we remove one cell
 
