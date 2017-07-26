@@ -17,7 +17,10 @@ namespace XRousseSudoku
         protected int _height;
 
         protected int _nSymbols;
-        protected int[][] _cells;
+        private SudokuGridCell[][] _cells;
+        private List<SudokuGridCell> _nullCells = new List<SudokuGridCell>();
+
+        protected int[] _coordGrid;
 
         // getters
         public int BlocW { get => _blockW; }
@@ -29,12 +32,33 @@ namespace XRousseSudoku
         {
             return W == H;
         }
+        // All value from specific Line in tab int[]
+        public int[] GetLineGrid(int line)
+        {
+            int[] tabLine = new int[_width];
+            for (int i = 0; i < _width; i++)
+            {
+                tabLine[i] = _cells[line][i].Value;
+            }
 
+            return tabLine;
+        }
+        // All value from specific Col int tab int[]
+        public int[] GetColGrid(int col)
+        {
+            int[] tabCol = new int[_height];
+            for(int i = 0; i < _height; i++)
+            {
+                tabCol[i] = _cells[i][col].Value;
+            }
+            return tabCol;
+        }
+        // Get spécifique cell
         public int GetCell(int line, int column)
         {
             Debug.Assert((line >= 0) && (line < H), "SudokuGridData, getCell, invalid line: " + line);
             Debug.Assert((column >= 0) && (column < W), "SudokuGridData, getCell, invalid column: " + column);
-            return _cells[line][column];
+            return _cells[line][column].Value;
         }
 
         // constructor
@@ -46,10 +70,10 @@ namespace XRousseSudoku
             _width = _height = _nSymbols;
 
             // Allocate cells
-            _cells = new int[_width][];
+            _cells = new SudokuGridCell[_width][];
             for(int i = 0; i< _width; i++)
             {
-                _cells[i] = new int[_height];
+                _cells[i] = new SudokuGridCell[_height];
             }
 
             GenerateRandomGrid(difficulty);
@@ -58,7 +82,6 @@ namespace XRousseSudoku
                 RandomizeRows(10);
                 RandomizeColumns(10);
             }
-            
         }
 
         public void GenerateRandomGrid(int difficulty)
@@ -69,7 +92,8 @@ namespace XRousseSudoku
             {
                 for(int i = 0; i < _width; i++)
                 {
-                    _cells[i][j] = ( (lineStart + i - 1) % _nSymbols ) + 1;
+                    _cells[i][j] = new SudokuGridCell(( (lineStart + i - 1) % _nSymbols ) + 1);
+                    _cells[i][j].SetCoordCell(i,j);
                 }
                 lineStart += _blockW;
             }
@@ -85,7 +109,8 @@ namespace XRousseSudoku
                     {
                         int column = (((i + 1) - iBlock) % _blockW ) + iBlock;
                         
-                        _cells[i][j] = _cells[column][j - _blockH];
+                        _cells[i][j] = new SudokuGridCell(_cells[column][j - _blockH].Value);
+                        _cells[i][j].SetCoordCell(i, j);
                         i++;
                     }
                 }
@@ -125,19 +150,16 @@ namespace XRousseSudoku
             // Test lines
             for (int j = 0; j < _height; j++)
             {
-                if (!CheckSymbols(_cells[j]))
+                int[] tabLineValue = GetLineGrid(j);
+                if (!CheckSymbols(tabLineValue))
                 {
                     return false;
                 }
             }
             // Test Columns
-            int[] tabColToTest = new int[_height];
             for(int i = 0; i < _width; i++)
             {
-                for (int j = 0; j < _height; j++)
-                {
-                    tabColToTest[j] = _cells[i][j];
-                }
+                int[] tabColToTest = GetColGrid(i);
                 if (!CheckSymbols(tabColToTest))
                 {
                     return false;
@@ -155,7 +177,7 @@ namespace XRousseSudoku
                     {
                         for (int l = j; l < (j + _blockH); l++)
                         {
-                            int val = _cells[k][l];
+                            int val = _cells[k][l].Value;
                             tabBlockToTest[indexTab] = val;
                             indexTab++;
                         }
@@ -194,10 +216,14 @@ namespace XRousseSudoku
                 // Get offset to be modified via RandomizeHelper method
                 RandomizeHelper(_blockW, out int offsetA, out int offsetB);
 
-                // Do permutation
-                int[] tempTab = _cells[offsetB];
-                _cells[offsetB] = _cells[offsetA];
-                _cells[offsetA] = tempTab;
+                // Do value permutation on each SudokuGridCell concern value
+                int tempCellValue;
+                for (int i = 0; i<_nSymbols; i++)
+                {
+                    tempCellValue = _cells[offsetB][i].Value;
+                    _cells[offsetB][i].Value = _cells[offsetA][i].Value;
+                    _cells[offsetA][i].Value = tempCellValue;
+                }
             }
         }
 
@@ -208,14 +234,13 @@ namespace XRousseSudoku
             {
                 // Get offset to be modified via RandomizeHelper method
                 RandomizeHelper(_blockH, out int offsetA, out int offsetB);
-
                 // Do Permutation
                 for (int i = 0; i < _width; i++)
                 {
-                    int tempValue = 0;
-                    tempValue = _cells[i][offsetB];
-                    _cells[i][offsetB] = _cells[i][offsetA];
-                    _cells[i][offsetA] = tempValue;
+                    int tempValue;
+                    tempValue = _cells[i][offsetB].Value;
+                    _cells[i][offsetB].Value = _cells[i][offsetA].Value;
+                    _cells[i][offsetA].Value = tempValue;
                 }
             }
         }
@@ -230,17 +255,75 @@ namespace XRousseSudoku
             while( !isValueInGrid )
             {
                 // We generate two numbers beetween 1 and the numbre of Symbols
-                numLine = rdm.Next(1, _nSymbols+1);
-                numCol = rdm.Next(1, _nSymbols + 1);
+                numLine = rdm.Next(0, _nSymbols);
+                numCol = rdm.Next(0, _nSymbols);
                 // If cell is null we loop else we put the new value 0 in cell
-                if(_cells[numLine][numCol] != 0)
+                if(_cells[numLine][numCol].Value != 0)
                 {
-                    _cells[numLine][numCol] = 0;
+                    _cells[numLine][numCol].Value = 0;
                     isValueInGrid = true;
                 }
             }
         }
 
+        // Create ordered list with all SudokuGridCell with null values
+        public void GetNullCells()
+        {
+            _nullCells.Clear();
+            for(int i=0; i< _width; i++)
+            {
+                for(int j=0; j<_height; j++)
+                {
+                    if(_cells[i][j].Value == 0)
+                    {
+                        _nullCells.Add(_cells[i][j]);
+                    }
+                }
+            }
+            foreach(SudokuGridCell cell in _nullCells)
+            {
+                Debug.WriteLine(cell);
+                ChangePossibleListCellValues(cell);
+            }
+        }
+
+        // Update list possible values for each null cell
+        public void ChangePossibleListCellValues(SudokuGridCell cell)
+        {
+            cell.PossibleValue.Clear();
+            for(int i=1; i <= _nSymbols; i++)
+            {
+                bool isPresent = false;
+                int[] tabLineToCheck = GetLineGrid(cell.GetCoordX);
+                int[] tabColToCheck = GetColGrid(cell.GetCoordY);
+                int[] tabBlockCheck = new int[_blockW*_blockH];
+                int numBlockW = cell.GetCoordX / _blockW;
+                int minBlockW = numBlockW * _blockW;
+                int maxBlockW = minBlockW + _blockW;
+                int numBlockH = cell.GetCoordY / _blockH;
+                int minBlockH = numBlockH * _blockH;
+                int maxBlockH = minBlockH + _blockH;
+                int indexOfTabBlock = 0;
+                for(int w = minBlockW; w < maxBlockW; w++)
+                {
+                    for(int h = minBlockH; h< maxBlockH; h++)
+                    {
+                        tabBlockCheck[indexOfTabBlock] = _cells[w][h].Value;
+                        Debug.WriteLine(" block : " + tabBlockCheck[indexOfTabBlock]);
+                        indexOfTabBlock++;
+                    }
+                }
+                if (Array.IndexOf(tabLineToCheck, i) > -1 || Array.IndexOf(tabColToCheck, i) > -1 || Array.IndexOf(tabBlockCheck, i) > -1)
+                {
+                    isPresent = true;
+                }
+                if (!isPresent)
+                {
+                    cell.PossibleValue.Add(i);
+                }
+            }
+        }
+        
         // Verifiy Grid is solvable
 
 

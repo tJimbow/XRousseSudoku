@@ -104,6 +104,7 @@ namespace XRousseSudoku
             _gridData = new SudokuGridData(1);
             _gridData.RemoveGridValue();
             _initialGridData = _gridData;
+            _gridData.GetNullCells();
             _gridData.Log();
 
             // set bg image
