@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace XRousseSudoku
@@ -24,6 +25,15 @@ namespace XRousseSudoku
         {
             _coordX = line;
             _coordY = column;
+        }
+        public void displayPossibleValues()
+        {
+            Debug.Write(" Values for case : X " +GetCoordX+" - Y "+GetCoordY);
+            foreach (int value in _possibleValue)
+            {
+                Debug.Write(" "+value+",");
+            }
+            Debug.WriteLine("");
         }
         public override string ToString()
         {

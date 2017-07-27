@@ -245,7 +245,7 @@ namespace XRousseSudoku
             }
         }
 
-        // Hide one value from grid
+        // Hide nb in param values from grid 
         public void RemoveGridValue(int nbRemovedCell)
         {
             for(int i=0; i < nbRemovedCell; i++)
@@ -285,8 +285,8 @@ namespace XRousseSudoku
             }
             foreach(SudokuGridCell cell in _nullCells)
             {
-                Debug.WriteLine(cell);
                 ChangePossibleListCellValues(cell);
+                cell.displayPossibleValues();
             }
         }
 
