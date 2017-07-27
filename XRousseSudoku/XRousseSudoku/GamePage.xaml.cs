@@ -102,7 +102,7 @@ namespace XRousseSudoku
 
             // _gridData
             _gridData = new SudokuGridData(1);
-            _gridData.RemoveGridValue();
+            _gridData.RemoveGridValue(48);
             _initialGridData = _gridData;
             _gridData.GetNullCells();
             _gridData.Log();

@@ -246,22 +246,25 @@ namespace XRousseSudoku
         }
 
         // Hide one value from grid
-        public void RemoveGridValue()
+        public void RemoveGridValue(int nbRemovedCell)
         {
-            bool isValueInGrid = false;
-            int numLine = 0;
-            int numCol = 0;
-            // While there is no value in cell
-            while( !isValueInGrid )
+            for(int i=0; i < nbRemovedCell; i++)
             {
-                // We generate two numbers beetween 1 and the numbre of Symbols
-                numLine = rdm.Next(0, _nSymbols);
-                numCol = rdm.Next(0, _nSymbols);
-                // If cell is null we loop else we put the new value 0 in cell
-                if(_cells[numLine][numCol].Value != 0)
+                bool isValueInGrid = false;
+                int numLine = 0;
+                int numCol = 0;
+                // While there is no value in cell
+                while (!isValueInGrid)
                 {
-                    _cells[numLine][numCol].Value = 0;
-                    isValueInGrid = true;
+                    // We generate two numbers beetween 1 and the numbre of Symbols
+                    numLine = rdm.Next(0, _nSymbols);
+                    numCol = rdm.Next(0, _nSymbols);
+                    // If cell is null we loop else we put the new value 0 in cell
+                    if (_cells[numLine][numCol].Value != 0)
+                    {
+                        _cells[numLine][numCol].Value = 0;
+                        isValueInGrid = true;
+                    }
                 }
             }
         }
@@ -309,7 +312,6 @@ namespace XRousseSudoku
                     for(int h = minBlockH; h< maxBlockH; h++)
                     {
                         tabBlockCheck[indexOfTabBlock] = _cells[w][h].Value;
-                        Debug.WriteLine(" block : " + tabBlockCheck[indexOfTabBlock]);
                         indexOfTabBlock++;
                     }
                 }
@@ -323,11 +325,6 @@ namespace XRousseSudoku
                 }
             }
         }
-        
-        // Verifiy Grid is solvable
-
-
-        // While the grid is solvable we remove one cell
 
         public void Log()
         {
