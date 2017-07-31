@@ -72,10 +72,9 @@ namespace XRousseSudoku
             // grid cells
             for (int i = 0; i < gridData.H; i++)
             {
-                int iBloc = i / gridData.BlocH;
                 for (int j = 0; j < gridData.W; j++)
                 {
-                    int jBloc = j / gridData.BlocW;
+                    SudokuGridCell curCell = _gridData.GetGridCell(i, j);
 
                     // each cell is a ContentView containing a Label
                     var cell = new ContentView
@@ -83,7 +82,7 @@ namespace XRousseSudoku
                         HorizontalOptions = LayoutOptions.FillAndExpand,
                         VerticalOptions = LayoutOptions.FillAndExpand,
                         Padding = new Thickness(0),
-                        BackgroundColor = (((iBloc + jBloc) % 2) == 0) ? Color.White : Color.LightGray,
+                        BackgroundColor = GetCellBaseColor(curCell),
                     };
 
                     // if value =  0, display nothing
@@ -91,18 +90,14 @@ namespace XRousseSudoku
                     {
                         HorizontalOptions = LayoutOptions.CenterAndExpand,
                         VerticalOptions = LayoutOptions.CenterAndExpand,
-                        Text = getCellText(_gridData.GetCell(i, j)),
+                        Text = GetCellText(_gridData.GetCell(i, j)),
                         FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                     };
-
-                    SudokuGridCell curCell = _gridData.GetGridCell(i, j);
 
                     // new Event bind on cell click
                     TapGestureRecognizer tap = new TapGestureRecognizer();
                     EventHandler myFunc = (object sender, EventArgs e) => {
-                        _currentSelectedCell = curCell;
-                        cell.BackgroundColor = Color.Green;
-                        Debug.Write(_currentSelectedCell.Value.ToString());
+                        OnCellClick(curCell);
                     };
                     tap.Tapped += myFunc;
                     cell.GestureRecognizers.Add(tap);
@@ -117,7 +112,21 @@ namespace XRousseSudoku
         }
 
         //
-        public String getCellText(int gridValue)
+        public void OnCellClick(SudokuGridCell curCell)
+        {
+            _currentSelectedCell = curCell;
+            Update();
+        }
+
+        public Color GetCellBaseColor(SudokuGridCell curCell)
+        {
+            int iBloc = curCell.GetCoordX / _gridData.BlocH;
+            int jBloc = curCell.GetCoordY / _gridData.BlocW;
+            return (((iBloc + jBloc) % 2) == 0) ? Color.White : Color.LightGray;
+        }
+
+        //
+        public String GetCellText(int gridValue)
         {
             return (gridValue != 0) ? gridValue.ToString() : "";
         }
@@ -129,8 +138,23 @@ namespace XRousseSudoku
             {
                 for (int j = 0; j < _gridData.W; j++)
                 {
+                    // get cell from sudokuGridData
                     SudokuGridCell curCell = _gridData.GetGridCell(i, j);
-                    _labels[i][j].Text = getCellText(curCell.Value);
+
+                    // get label
+                    var label = _labels[i][j];
+
+                    // set label text
+                    label.Text = GetCellText(curCell.Value);
+
+                    // get gridView cell
+                    ContentView cell = label.Parent as ContentView;
+
+                    cell.BackgroundColor = GetCellBaseColor(curCell);
+                    if (_currentSelectedCell == curCell)
+                        cell.BackgroundColor = Color.Green;
+
+                    //Debug.Write(_currentSelectedCell.Value.ToString());
                 }
             }
         }

@@ -102,11 +102,14 @@ namespace XRousseSudoku
 
             // _gridData
             _gridData = new SudokuGridData(1);
-			_initialGridData = _gridData;
 
+            // remove some values
             _gridData.RemoveGridValue(48);            
             _gridData.GetNullCells();
             _gridData.Log();
+
+            // save initial state
+			_initialGridData = _gridData;
 
             // set bg image
             BackgroundImage = "retina_wood_1024.png";
