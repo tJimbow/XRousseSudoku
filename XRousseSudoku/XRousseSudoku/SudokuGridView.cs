@@ -87,6 +87,14 @@ namespace XRousseSudoku
                         FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                     };
 
+                    // new Event bind on cell click
+                    TapGestureRecognizer tap = new TapGestureRecognizer();
+                    EventHandler myFunc = (object sender, EventArgs e) => {
+                        Debug.Write(cell.Content.ToString());
+                    };
+                    tap.Tapped += myFunc;
+                    cell.GestureRecognizers.Add(tap);
+
                     // add cell to the grid
                     grid.Children.Add(cell, i, j);
                 }
