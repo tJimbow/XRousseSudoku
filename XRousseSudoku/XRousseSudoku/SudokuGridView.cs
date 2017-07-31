@@ -13,6 +13,7 @@ namespace XRousseSudoku
     {
         protected SudokuGridData _gridData;
         protected Label[][] _labels;
+        protected SudokuGridCell _currentSelectedCell = null;
 
         // the sudoku grid needs to be inside a Frame Layout using FillAndExpand (containerFrame param)
         public SudokuGridView(SudokuGridData gridData, Frame containerFrame)
@@ -99,7 +100,9 @@ namespace XRousseSudoku
                     // new Event bind on cell click
                     TapGestureRecognizer tap = new TapGestureRecognizer();
                     EventHandler myFunc = (object sender, EventArgs e) => {
-                        Debug.Write(curCell.GetCoordX.ToString());
+                        _currentSelectedCell = curCell;
+                        cell.BackgroundColor = Color.Green;
+                        Debug.Write(_currentSelectedCell.Value.ToString());
                     };
                     tap.Tapped += myFunc;
                     cell.GestureRecognizers.Add(tap);
