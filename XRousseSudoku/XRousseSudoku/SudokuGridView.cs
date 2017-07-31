@@ -12,6 +12,7 @@ namespace XRousseSudoku
     public class SudokuGridView : ContentView
     {
         protected SudokuGridData _gridData;
+        protected Label[][] _labels;
 
         // the sudoku grid needs to be inside a Frame Layout using FillAndExpand (containerFrame param)
         public SudokuGridView(SudokuGridData gridData, Frame containerFrame)
@@ -21,6 +22,11 @@ namespace XRousseSudoku
 
             // store associated grid data
             _gridData = gridData;
+
+            // we will store reference to each label in a 2D array
+            _labels = new Label[gridData.W][];
+            for (int i = 0; i < gridData.W; i++)
+                _labels[i] = new Label[gridData.H];
 
             // Centered, no expand/fill (because we want to control width/height ourselves)
             this.HorizontalOptions = LayoutOptions.Center;
@@ -80,12 +86,11 @@ namespace XRousseSudoku
                     };
 
                     // if value =  0, display nothing
-                    String text = (_gridData.GetCell(i, j) != 0) ? _gridData.GetCell(i, j).ToString() : "";
-                    cell.Content = new Label
+                    cell.Content = _labels[i][j] = new Label
                     {
                         HorizontalOptions = LayoutOptions.CenterAndExpand,
                         VerticalOptions = LayoutOptions.CenterAndExpand,
-                        Text = text,
+                        Text = getCellText(_gridData.GetCell(i, j)),
                         FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                     };
 
@@ -108,10 +113,23 @@ namespace XRousseSudoku
             this.Content = grid;
         }
 
+        //
+        public String getCellText(int gridValue)
+        {
+            return (gridValue != 0) ? gridValue.ToString() : "";
+        }
+
         // updates the cell colors / labels
         public void Update()
         {
-
+            for (int i = 0; i < _gridData.H; i++)
+            {
+                for (int j = 0; j < _gridData.W; j++)
+                {
+                    SudokuGridCell curCell = _gridData.GetGridCell(i, j);
+                    _labels[i][j].Text = getCellText(curCell.Value);
+                }
+            }
         }
     }
 };
