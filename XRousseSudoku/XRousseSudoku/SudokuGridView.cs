@@ -78,12 +78,14 @@ namespace XRousseSudoku
                         Padding = new Thickness(0),
                         BackgroundColor = (((iBloc + jBloc) % 2) == 0) ? Color.White : Color.LightGray,
                     };
-
+                    
+                    // if value =  0, display nothing
+                    String text = (_gridData.GetCell(i, j) != 0) ? _gridData.GetCell(i, j).ToString() : "";
                     cell.Content = new Label
                     {
                         HorizontalOptions = LayoutOptions.CenterAndExpand,
                         VerticalOptions = LayoutOptions.CenterAndExpand,
-                        Text = _gridData.GetCell(i, j).ToString(),
+                        Text = text,
                         FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                     };
 

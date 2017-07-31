@@ -14,7 +14,10 @@ namespace XRousseSudoku
     public partial class GamePage : ContentPage
     {
         protected View _sudokuGridView;
+        // Grid with change
         protected SudokuGridData _gridData;
+        // Initial Grid with all value
+        protected SudokuGridData _initialGridData;
 
         ///////////////////////////////////////////////////////////////////////
         // HEADER 
@@ -99,6 +102,10 @@ namespace XRousseSudoku
 
             // _gridData
             _gridData = new SudokuGridData(1);
+			_initialGridData = _gridData;
+
+            _gridData.RemoveGridValue(48);            
+            _gridData.GetNullCells();
             _gridData.Log();
 
             // set bg image
