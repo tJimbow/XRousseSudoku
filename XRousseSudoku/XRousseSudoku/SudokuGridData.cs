@@ -32,6 +32,7 @@ namespace XRousseSudoku
         {
             return W == H;
         }
+
         // All value from specific Line in tab int[]
         public int[] GetLineGrid(int line)
         {
@@ -53,7 +54,8 @@ namespace XRousseSudoku
             }
             return tabCol;
         }
-        // Get spécifique cell
+
+        // Get specific cell
         public int GetCell(int line, int column)
         {
             Debug.Assert((line >= 0) && (line < H), "SudokuGridData, getCell, invalid line: " + line);
@@ -118,7 +120,6 @@ namespace XRousseSudoku
         // Is Each symbols unique per line, column and block
         public bool CheckSymbols(int[] sequence)
         {
-
             // REVIEW : Modification du check si des cases sont vide ne renvoie pas d'erreur et va donc
             // Compter les cases vides et les soustraits du total
             int nFound = 0;
@@ -144,7 +145,6 @@ namespace XRousseSudoku
 
         public bool IsValid()
         {
-
             // Test lines
             for (int j = 0; j < _height; j++)
             {
