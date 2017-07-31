@@ -54,13 +54,17 @@ namespace XRousseSudoku
             }
             return tabCol;
         }
-
         // Get specific cell
-        public int GetCell(int line, int column)
+        public SudokuGridCell GetGridCell(int line, int column)
         {
             Debug.Assert((line >= 0) && (line < H), "SudokuGridData, getCell, invalid line: " + line);
             Debug.Assert((column >= 0) && (column < W), "SudokuGridData, getCell, invalid column: " + column);
-            return _cells[line][column].Value;
+            return _cells[line][column];
+        }
+
+        public int GetCell(int line, int column)
+        {
+            return GetGridCell(line, column).Value;
         }
 
         // constructor

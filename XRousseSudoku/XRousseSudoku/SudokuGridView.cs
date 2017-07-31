@@ -78,7 +78,7 @@ namespace XRousseSudoku
                         Padding = new Thickness(0),
                         BackgroundColor = (((iBloc + jBloc) % 2) == 0) ? Color.White : Color.LightGray,
                     };
-                    
+
                     // if value =  0, display nothing
                     String text = (_gridData.GetCell(i, j) != 0) ? _gridData.GetCell(i, j).ToString() : "";
                     cell.Content = new Label
@@ -88,6 +88,16 @@ namespace XRousseSudoku
                         Text = text,
                         FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                     };
+
+                    SudokuGridCell curCell = _gridData.GetGridCell(i, j);
+
+                    // new Event bind on cell click
+                    TapGestureRecognizer tap = new TapGestureRecognizer();
+                    EventHandler myFunc = (object sender, EventArgs e) => {
+                        Debug.Write(curCell.GetCoordX.ToString());
+                    };
+                    tap.Tapped += myFunc;
+                    cell.GestureRecognizers.Add(tap);
 
                     // add cell to the grid
                     grid.Children.Add(cell, i, j);
