@@ -14,10 +14,13 @@ namespace XRousseSudoku
         protected SudokuGridData _gridData;
         protected Label[][] _labels;
         protected SudokuGridCell _currentSelectedCell = null;
+        protected Label _messageHeader;
 
         // the sudoku grid needs to be inside a Frame Layout using FillAndExpand (containerFrame param)
-        public SudokuGridView(SudokuGridData gridData, Frame containerFrame)
+        public SudokuGridView(SudokuGridData gridData, Frame containerFrame, Label messageHeader)
         {
+            // Set label header for log and info and error
+            _messageHeader = messageHeader;
             // for now we only support square grids
             Debug.Assert(gridData.IsSquare(), "SudokuGridView only support square grids (for now) !");
 
@@ -111,11 +114,24 @@ namespace XRousseSudoku
             this.Content = grid;
         }
 
-        //
+        // Action on when you click on a cell
         public void OnCellClick(SudokuGridCell curCell)
         {
             _currentSelectedCell = curCell;
-            Update();
+            if (curCell.IsEditable)
+            {
+                _messageHeader.Text = "Veuillez sélectionner un caractère";
+                Update();
+                curCell.IsSelected = true;
+                curCell.displayPossibleValues();
+                _currentSelectedCell = null;
+            }
+            else
+            {
+                Update();
+                _currentSelectedCell = null;
+                _messageHeader.Text = "Veuillez sélectionner une case";
+            }
         }
 
         public Color GetCellBaseColor(SudokuGridCell curCell)
@@ -140,7 +156,7 @@ namespace XRousseSudoku
                 {
                     // get cell from sudokuGridData
                     SudokuGridCell curCell = _gridData.GetGridCell(i, j);
-
+                    curCell.IsSelected = false;
                     // get label
                     var label = _labels[i][j];
 
@@ -153,8 +169,6 @@ namespace XRousseSudoku
                     cell.BackgroundColor = GetCellBaseColor(curCell);
                     if (_currentSelectedCell == curCell)
                         cell.BackgroundColor = Color.Green;
-
-                    //Debug.Write(_currentSelectedCell.Value.ToString());
                 }
             }
         }

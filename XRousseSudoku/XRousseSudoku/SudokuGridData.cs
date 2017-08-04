@@ -15,7 +15,7 @@ namespace XRousseSudoku
         protected int _blockH;
         protected int _width;
         protected int _height;
-
+        
         protected int _nSymbols;
         private SudokuGridCell[][] _cells;
         private List<SudokuGridCell> _nullCells = new List<SudokuGridCell>();
@@ -265,6 +265,7 @@ namespace XRousseSudoku
                     if (_cells[numLine][numCol].Value != 0)
                     {
                         _cells[numLine][numCol].Value = 0;
+                        _cells[numLine][numCol].IsEditable = true;
                         isValueInGrid = true;
                     }
                 }
@@ -328,6 +329,85 @@ namespace XRousseSudoku
             }
         }
 
+        // Change value in the field return string if possible or not
+        public String SetCellValue(SudokuGridCell c, int v)
+        {
+            if(ValueIsValid(c, v))
+            {
+                c.displayPossibleValues();
+                int prevValue = c.Value;
+                c.Value = v;
+                ChangeCorresValues(c, v);
+                c.displayPossibleValues();
+                return "Valeur changée";
+            }
+            else
+            {
+                return "Valeur impossible";
+            }
+        }
+
+        // Change value for correspondant cells
+        public void ChangeCorresValues(SudokuGridCell cell, int v)
+        {
+            int x = cell.GetCoordX;
+            int y = cell.GetCoordY;
+            int blockMinX = (x % _blockW) * _blockW;
+            int blockMinY = (y % _blockH) * _blockH;
+            // Verif and change line's cell possible values
+            for(int i = 0; i<_nSymbols; i++)
+            {
+                // is the cell editable and not part of the initial values
+                if (_cells[x][i].IsEditable)
+                {
+                    ChangePossibleListCellValues(_cells[x][i]);
+                }
+            }
+            // Verif and change column's cell possible values
+            for(int j = 0; j<_nSymbols; j++)
+            {
+                ChangePossibleListCellValues(_cells[j][y]);
+            }
+            // Verif and change block's cell possible values
+            for(int bX = blockMinX; bX < (blockMinX + _blockW); bX++)
+            {
+                for(int bY = blockMinY; bY < (blockMinY + _blockH); bY++)
+                {
+                    ChangePossibleListCellValues(_cells[bX][bY]);
+                }
+            }
+        }
+
+        // Is value in cell's possible values list
+        public bool ValueIsValid(SudokuGridCell c, int v)
+        {
+            if (c != null)
+            {
+                return (c.PossibleValue.Contains(v)) ? true : false;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        // Get the selected cell
+        public SudokuGridCell GetSelectedCell()
+        {
+            for(int x = 0; x < _width; x++)
+            {
+                for(int y = 0; y < _height; y++)
+                {
+                    if (_cells[x][y].IsSelected)
+                    {
+                        return _cells[x][y];
+                    }
+                }
+            }
+            return null;
+        }
+
+        // Display Grid in log
         public void Log()
         {
             if (!IsValid())

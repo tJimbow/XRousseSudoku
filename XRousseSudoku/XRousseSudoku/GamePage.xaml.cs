@@ -16,15 +16,14 @@ namespace XRousseSudoku
         protected View _sudokuGridView;
         // Grid with change
         protected SudokuGridData _gridData;
-        // Initial Grid with all value
-        protected SudokuGridData _initialGridData;
-
+        protected Label _messageHeader;
         ///////////////////////////////////////////////////////////////////////
         // HEADER 
         ///////////////////////////////////////////////////////////////////////
 
         public View GenerateHeaderContent()
         {
+            StackLayout header = new StackLayout();
             // title
             Label maintTitleGame = new Label
             {
@@ -37,14 +36,28 @@ namespace XRousseSudoku
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
             };
-            return maintTitleGame;
+            Label logHeader = new Label
+            {
+                Margin = new Thickness(0, 40, 10, 0),
+                Text = "Select a case",
+                FontSize = 20,
+                FontFamily = "Verdana",
+                FontAttributes = FontAttributes.Bold,
+                TextColor = Color.FromHex("#000"),
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+            };
+            _messageHeader = logHeader;
+            header.Children.Add(maintTitleGame);
+            header.Children.Add(logHeader);
+            return header;
         }
 
         ///////////////////////////////////////////////////////////////////////
         // FOOTER
         ///////////////////////////////////////////////////////////////////////
 
-        public StackLayout GenerateNumbersLayout()
+        public StackLayout GenerateNumbersLayout(SudokuGridData sudokuGridData, SudokuGridView GridView)
         {
             StackLayout numbersLayout = new StackLayout
             {
@@ -57,8 +70,12 @@ namespace XRousseSudoku
                 Button btn = new Button();
                 btn.Text = i.ToString();
                 numbersLayout.Children.Add(btn);
+                btn.Clicked += (object sender, EventArgs e) => {
+                    String message = sudokuGridData.SetCellValue(sudokuGridData.GetSelectedCell(), int.Parse(btn.Text));
+                    _messageHeader.Text = message;
+                    GridView.Update();
+                };
             }
-
             return numbersLayout;
         }
 
@@ -83,10 +100,10 @@ namespace XRousseSudoku
             await Navigation.PopModalAsync();
         }
 
-        public View GenerateFooterContent()
+        public View GenerateFooterContent(SudokuGridData GridData, SudokuGridView GridView)
         {
             StackLayout footer = new StackLayout();
-            footer.Children.Add(GenerateNumbersLayout());
+            footer.Children.Add(GenerateNumbersLayout(GridData, GridView));
             footer.Children.Add(GenerateBackToMainMenuButton());
             return footer;
         }
@@ -106,10 +123,6 @@ namespace XRousseSudoku
             // remove some values
             _gridData.RemoveGridValue(48);            
             _gridData.GetNullCells();
-            _gridData.Log();
-
-            // save initial state
-			_initialGridData = _gridData;
 
             // set bg image
             BackgroundImage = "retina_wood_1024.png";
@@ -134,7 +147,7 @@ namespace XRousseSudoku
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Padding = new Thickness(0)
             };
-            _sudokuGridView = new SudokuGridView(_gridData, gridContainer);
+            _sudokuGridView = new SudokuGridView(_gridData, gridContainer, _messageHeader);
             gridContainer.Content = _sudokuGridView;
             
             // container for the footer
@@ -143,7 +156,7 @@ namespace XRousseSudoku
                 BackgroundColor = debug ? Color.Blue : Color.Transparent,
                 VerticalOptions = LayoutOptions.End,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                Content = GenerateFooterContent()
+                Content = GenerateFooterContent(_gridData, (SudokuGridView) _sudokuGridView)
             };
             
             // main stack layout
